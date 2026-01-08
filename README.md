@@ -180,14 +180,6 @@ See `requirements.txt` for versions.
 
 Sample results in `outputs/module1_samples/`
 
-## License
-
-[Your License]
-
 ## Author
 
-[Your Name]
-
-## Acknowledgments
-
-Dataset: DeepPCB - Tang et al.
+FARIATHTHEEN F
