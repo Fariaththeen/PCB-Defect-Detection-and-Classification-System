@@ -1,0 +1,39 @@
+# Dataset files (DO NOT upload actual images)
+data/raw/*
+data/processed/*
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environment
+venv/
+env/
+ENV/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+
+# Keep folder structure with README
+!data/README.md
+!data/raw/.gitkeep
+!data/processed/.gitkeep
