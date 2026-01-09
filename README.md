@@ -1,8 +1,10 @@
-# PCB Defect Detection - Module 1
+# PCB Defect Detection System
 
 ## Objective
 
-This project implements **Module 1: Dataset Setup and Image Subtraction** for PCB defect detection using classical image processing techniques. The goal is to convert template-test PCB image pairs into clean binary masks that highlight manufacturing defects.
+This project implements a complete **PCB defect detection pipeline** using classical image processing and deep learning. The system detects and classifies 6 types of manufacturing defects in printed circuit boards.
+
+**Current Status**: ✅ Module 1 (Image Subtraction) + ✅ Module 2 (ROI Extraction) Implemented
 
 ## Dataset
 
@@ -122,17 +124,82 @@ Sample outputs are in `outputs/module1_samples/` for reference.
 
 See `docs/module1_explanation.md` for detailed technical explanation.
 
-## Next Modules
+---
 
-**Module 2:** ROI Extraction
-- Contour detection on binary masks
-- Bounding box extraction
-- Defect region cropping
+## Module 2 Pipeline (ROI Extraction) ✅
 
-**Module 3:** CNN Classification
-- Train classifier on extracted ROIs
-- Predict defect type
-- Build inference API
+```
+Binary Mask from Module 1
+         ↓
+   [Contour Detection]
+   - Find defect boundaries
+   - Compute properties
+         ↓
+   [Contour Filtering]
+   - Remove noise (< 50 px²)
+   - Filter by aspect ratio
+         ↓
+   [Bounding Box Extraction]
+   - Get defect rectangles
+   - Add padding (10 pixels)
+         ↓
+   [ROI Cropping]
+   - Extract defect regions
+   - Preserve original pixels
+         ↓
+   [Normalization]
+   - Resize to 64×64
+   - Pad to preserve aspect ratio
+         ↓
+   [Label Assignment]
+   - Extract from filename
+   - Create label manifest
+         ↓
+   Fixed-size, Labeled ROI Dataset
+```
+
+**Processing time:** ~0.1-0.2 seconds per image
+
+### Run Module 2
+
+```bash
+# Single image (with visualization)
+python src/module2_roi_extraction/pipeline.py \
+  --mask data/processed/binary_mask/01_missing_hole_01_mask.png \
+  --source data/raw/test/01_missing_hole_01.jpg \
+  --output data/rois/ \
+  --visualize
+
+# Batch processing
+python src/module2_roi_extraction/pipeline.py \
+  --mask_dir data/processed/binary_mask/ \
+  --source_dir data/raw/test/ \
+  --output data/rois/
+
+# Custom settings
+python src/module2_roi_extraction/pipeline.py \
+  --mask mask.png --source image.jpg --output rois/ \
+  --size 128 --padding 15 --min_area 100
+```
+
+**Outputs**:
+- `normalized_rois/`: Fixed-size defect images (64×64)
+- `label_manifest.json`: Dataset metadata for ML training
+- `visualizations/`: Contours, bounding boxes, ROI grids
+
+See `docs/module2_explanation.md` for technical details.
+
+---
+
+## Module 3 (CNN Classification) 🚧
+
+**Status**: Coming soon
+
+**Planned Features**:
+- Train CNN classifier on extracted ROIs
+- 6-class defect classification
+- Model evaluation and validation
+- FastAPI inference endpoint
 
 ## Project Structure
 
@@ -143,24 +210,36 @@ pcb-defect-detection/
 ├── .gitignore
 │
 ├── src/
-│   └── module1_dataset_subtraction/
-│       ├── inspect_dataset.py   (dataset validation)
-│       ├── preprocess.py        (grayscale, denoise)
-│       ├── subtraction.py       (image difference)
-│       ├── thresholding.py      (Otsu method)
-│       ├── postprocess.py       (morphology)
-│       └── pipeline.py          (end-to-end)
+│   ├── module1_dataset_subtraction/
+│   │   ├── inspect_dataset.py   (dataset validation)
+│   │   ├── preprocess.py        (grayscale, denoise)
+│   │   ├── subtraction.py       (image difference)
+│   │   ├── thresholding.py      (Otsu method)
+│   │   ├── postprocess.py       (morphology)
+│   │   └── pipeline.py          (end-to-end Module 1)
+│   │
+│   └── module2_roi_extraction/  ✅ NEW
+│       ├── contour_detection.py (find defect contours)
+│       ├── filter_contours.py   (remove noise)
+│       ├── bounding_box.py      (extract boxes)
+│       ├── roi_extractor.py     (crop regions)
+│       ├── roi_normalizer.py    (resize to 64×64)
+│       ├── label_assignment.py  (assign labels)
+│       └── pipeline.py          (end-to-end Module 2)
 │
 ├── data/
 │   ├── README.md                (dataset setup guide)
 │   ├── raw/                     (place DeepPCB here)
-│   └── processed/               (pipeline outputs)
+│   ├── processed/               (Module 1 outputs)
+│   └── rois/                    ✅ NEW (Module 2 outputs)
 │
 ├── outputs/
-│   └── module1_samples/         (sample results)
+│   ├── module1_samples/         (Module 1 sample results)
+│   └── module2_samples/         ✅ NEW (Module 2 sample ROIs)
 │
 └── docs/
-    └── module1_explanation.md   (detailed explanation)
+    ├── module1_explanation.md   (detailed explanation)
+    └── module2_explanation.md   ✅ NEW (ROI extraction details)
 ```
 
 ## Requirements
