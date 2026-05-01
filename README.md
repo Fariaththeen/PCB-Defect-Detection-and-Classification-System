@@ -32,7 +32,7 @@ Manual inspection of PCBs is time-consuming and error-prone. This system automat
 - **Image Processing**: OpenCV, NumPy, Pillow
 - **Data Handling**: Pandas
 
-## 🚀 Installation & Setup
+## 🚀 Quick Setup (New System)
 
 1.  **Clone the Repository**
     ```bash
@@ -40,32 +40,28 @@ Manual inspection of PCBs is time-consuming and error-prone. This system automat
     cd PCB-Defect-Detection-and-Classification-System
     ```
 
-2.  **Create Virtual Environment**
+2.  **Run the Setup Script**
+    Create a virtual environment and install everything:
     ```bash
     python -m venv venv
     source venv/bin/activate  # Windows: venv\Scripts\activate
-    ```
-
-3.  **Install Dependencies**
-    ```bash
     pip install -r requirements.txt
     ```
 
-## 💻 Running the Application
+3.  **Transfer Model Weights**
+    Since model files are large, ensure the `models/best_model_weights.pth` file is present in the `models/` folder.
 
-To run the full system, you need to start both the backend API and the frontend dashboard.
+## 💻 Running the Application (The Easy Way)
 
-**1. Start the Backend API (Terminal 1)**
-This service handles the AI inference.
+I have created a single script to launch everything. Just run:
 ```bash
-uvicorn src.api.server:app --reload --host 0.0.0.0 --port 8000
+python run_app.py
 ```
+This will automatically:
+- Start the **Backend API** (Port 8000)
+- Start the **Frontend Dashboard** (Port 8501)
+- Handle all path configurations for you.
 
-**2. Start the Frontend Dashboard (Terminal 2)**
-This launches the web interface.
-```bash
-streamlit run app.py
-```
 Open your browser to `http://localhost:8501`.
 
 ## 📂 Project Structure
