@@ -7,10 +7,13 @@ from pathlib import Path
 def run_app():
     project_root = Path(__file__).parent.absolute()
     
-    # Add src to PYTHONPATH
+    # Add src and venv site-packages to PYTHONPATH
     env = os.environ.copy()
     src_path = str(project_root / "src")
-    env["PYTHONPATH"] = f"{src_path}{os.pathsep}{env.get('PYTHONPATH', '')}"
+    venv_site_packages = str(project_root / "venv" / "lib" / "python3.14" / "site-packages")
+    
+    current_pythonpath = env.get('PYTHONPATH', '')
+    env["PYTHONPATH"] = f"{src_path}{os.pathsep}{venv_site_packages}{os.pathsep}{current_pythonpath}"
     
     print("="*60)
     print("  PCB DEFECT DETECTION SYSTEM - STARTUP SCRIPT")
